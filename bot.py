@@ -5,13 +5,17 @@ query = input("Ne araştırmak istiyorsun: ")
 
 url = f"https://duckduckgo.com/html/?q={query}"
 
-response = requests.get(url)
+headers = {
+    "User-Agent": "Mozilla/5.0"
+}
+
+response = requests.get(url, headers=headers)
 
 soup = BeautifulSoup(response.text, "html.parser")
 
-results = soup.select("a.result__a")[:5]
+results = soup.select("a.result__a")
 
 print("\nSonuçlar:\n")
 
-for r in results:
-    print("-", r.text)
+for r in results[:5]:
+    print("-", r.get_text())
