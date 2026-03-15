@@ -9,7 +9,7 @@ response = requests.get(url)
 
 soup = BeautifulSoup(response.text, "html.parser")
 
-results = soup.find_all("a", class_="result__a", limit=5)
+results = soup.select("a.result__a")[:5]
 
 print("\nSonuçlar:\n")
 
