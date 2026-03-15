@@ -1,21 +1,26 @@
 import requests
-from bs4 import BeautifulSoup
+
+def search_wikipedia(query):
+    url = "https://en.wikipedia.org/api/rest_v1/page/summary/" + query
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        print("Sonuç bulunamadı.")
+        return
+
+    data = response.json()
+
+    title = data.get("title", "Başlık yok")
+    summary = data.get("extract", "Açıklama yok")
+
+    print("\n📚 Başlık:", title)
+    print("\n🧠 Özet:\n")
+    print(summary)
+
 
 query = input("Ne araştırmak istiyorsun: ")
 
-url = f"https://duckduckgo.com/html/?q={query}"
+query = query.replace(" ", "_")
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
-
-response = requests.get(url, headers=headers)
-
-soup = BeautifulSoup(response.text, "html.parser")
-
-results = soup.select("a.result__a")
-
-print("\nSonuçlar:\n")
-
-for r in results[:5]:
-    print("-", r.get_text())
+search_wikipedia(query)
