@@ -1,26 +1,31 @@
 import requests
 
-def search_wikipedia(query):
-    url = "https://en.wikipedia.org/api/rest_v1/page/summary/" + query
-
-    response = requests.get(url)
-
-    if response.status_code != 200:
-        print("Sonuç bulunamadı.")
-        return
-
-    data = response.json()
-
-    title = data.get("title", "Başlık yok")
-    summary = data.get("extract", "Açıklama yok")
-
-    print("\n📚 Başlık:", title)
-    print("\n🧠 Özet:\n")
-    print(summary)
-
-
 query = input("Ne araştırmak istiyorsun: ")
 
-query = query.replace(" ", "_")
+# Wikipedia arama API
+search_url = "https://en.wikipedia.org/w/api.php"
 
-search_wikipedia(query)
+params = {
+    "action": "query",
+    "list": "search",
+    "srsearch": query,
+    "format": "json"
+}
+
+response = requests.get(search_url, params=params)
+data = response.json()
+
+results = data["query"]["search"]
+
+if not results:
+    print("Sonuç bulunamadı.")
+else:
+    print("\nSonuçlar:\n")
+
+    for i, result in enumerate(results[:5], start=1):
+        title = result["title"]
+        snippet = result["snippet"]
+
+        print(f"{i}. {title}")
+        print(snippet)
+        print()
