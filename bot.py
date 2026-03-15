@@ -2,8 +2,7 @@ import requests
 
 query = input("Ne araştırmak istiyorsun: ")
 
-# Wikipedia arama API
-search_url = "https://en.wikipedia.org/w/api.php"
+url = "https://en.wikipedia.org/w/api.php"
 
 params = {
     "action": "query",
@@ -12,10 +11,15 @@ params = {
     "format": "json"
 }
 
-response = requests.get(search_url, params=params)
-data = response.json()
+response = requests.get(url, params=params)
 
-results = data["query"]["search"]
+try:
+    data = response.json()
+except:
+    print("Veri okunamadı. İnternet veya API hatası olabilir.")
+    exit()
+
+results = data.get("query", {}).get("search", [])
 
 if not results:
     print("Sonuç bulunamadı.")
